@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.Date;
 
+import de.bwaldvogel.mongo.backend.Command;
+
 import org.bson.Document;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,8 +117,8 @@ public class RealMongoBackendTest extends AbstractBackendTest {
     @Test
     @Override
     public void testServerStatus() {
-        verifyServerStatus(runCommand("serverStatus"));
-        verifyServerStatus(db.runCommand(json("serverStatus:1")));
+        verifyServerStatus(runCommand(Command.SERVER_STATUS));
+        verifyServerStatus(db.runCommand(json("serverStatus: 1")));
     }
 
     private void verifyServerStatus(Document serverStatus) {
@@ -150,6 +152,6 @@ public class RealMongoBackendTest extends AbstractBackendTest {
     public void testCommandThatTriggersAnInternalException() {
         assertThatExceptionOfType(MongoCommandException.class)
             .isThrownBy(() -> db.runCommand(json("triggerInternalException: 1")))
-            .withMessageStartingWith("Command execution failed on MongoDB server with error 59 (CommandNotFound): 'no such command: 'triggerInternalException'");
+            .withMessageStartingWith("Command failed with error 59 (CommandNotFound): 'no such command: 'triggerInternalException'");
     }
 }

@@ -2492,7 +2492,7 @@ public abstract class AbstractBackendTest extends AbstractTest {
         try (MongoCursor<Document> cursor1 = collection.find().batchSize(10).cursor();
              MongoCursor<Document> cursor2 = collection.find().batchSize(10).cursor()) {
             log.debug("Opened {} and {}", cursor1.getServerCursor(), cursor2.getServerCursor());
-            Document serverStatus = runCommand("serverStatus");
+            Document serverStatus = runCommand(Command.SERVER_STATUS);
             assertThat(serverStatus.getDouble("ok")).isEqualTo(1);
 
             Document metrics = serverStatus.get("metrics", Document.class);
@@ -2507,7 +2507,7 @@ public abstract class AbstractBackendTest extends AbstractTest {
 
     @Test
     void testPing() {
-        assertThat(runCommand("ping").getDouble("ok")).isEqualTo(1.0);
+        assertThat(runCommand(Command.PING).getDouble("ok")).isEqualTo(1.0);
         assertThat(runCommand(json("ping: true")).getDouble("ok")).isEqualTo(1.0);
         assertThat(runCommand(json("ping: 2.0")).getDouble("ok")).isEqualTo(1.0);
         assertThat(getDatabase().runCommand(json("ping: true")).getDouble("ok")).isEqualTo(1.0);
@@ -2516,7 +2516,7 @@ public abstract class AbstractBackendTest extends AbstractTest {
     @Test
     void testReplSetGetStatus() {
         assertThatExceptionOfType(MongoCommandException.class)
-            .isThrownBy(() -> runCommand("replSetGetStatus"))
+            .isThrownBy(() -> runCommand(Command.REPL_SET_GET_STATUS))
             .withMessageStartingWith("Command execution failed on MongoDB server with error 76 (NoReplicationEnabled): 'not running with --replSet'");
     }
 
@@ -5230,7 +5230,7 @@ public abstract class AbstractBackendTest extends AbstractTest {
     void testGetLastError() {
         collection.insertOne(json("_id: 1"));
 
-        Document actual = db.runCommand(json("getlasterror: 1"));
+        Document actual = db.runCommand(json("getLastError: 1"));
         assertThat(actual.get("n")).isEqualTo(0);
         assertThat(actual).containsKey("err");
         assertThat(actual.get("err")).isNull();
@@ -5240,7 +5240,7 @@ public abstract class AbstractBackendTest extends AbstractTest {
             .isThrownBy(() -> collection.insertOne(json("_id: 1.0")))
             .withMessageContaining("E11000 duplicate key error collection: testdb.testcoll index: _id_ dup key: { _id: 1.0 }");
 
-        Document lastError = db.runCommand(json("getlasterror: 1"));
+        Document lastError = db.runCommand(json("getLastError: 1"));
         assertThat(lastError.get("code")).isEqualTo(11000);
         assertThat(lastError.getString("err")).contains("duplicate key");
         assertThat(lastError.getString("codeName")).isEqualTo("DuplicateKey");
@@ -5255,10 +5255,10 @@ public abstract class AbstractBackendTest extends AbstractTest {
             .isThrownBy(() -> collection.insertOne(json("_id: 1.0")))
             .withMessageContaining("duplicate key error collection: testdb.testcoll index: _id_ dup key: { _id: 1.0 }");
 
-        assertThat(db.runCommand(json("reseterror: 1")))
+        assertThat(db.runCommand(json("resetError: 1")))
             .isEqualTo(json("ok: 1.0"));
 
-        assertThat(db.runCommand(json("getlasterror: 1")))
+        assertThat(db.runCommand(json("getLastError: 1")))
             .containsAllEntriesOf(json("err: null, n: 0, ok: 1.0"));
     }
 
