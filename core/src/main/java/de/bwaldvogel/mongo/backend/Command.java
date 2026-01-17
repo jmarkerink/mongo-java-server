@@ -1,6 +1,9 @@
 package de.bwaldvogel.mongo.backend;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public enum Command {
     // User
@@ -53,10 +56,20 @@ public enum Command {
     // Monitoring
     GET_FREE_MONITORING_STATUS("getFreeMonitoringStatus"),
 
+    // internal use
     TRIGGER_INTERNAL_EXCEPTION("triggerInternalException"),
     UNKNOWN("unknown");
 
     private final String name;
+    private static final Map<String, Command> LOOKUP;
+
+    static {
+        LOOKUP = Arrays.stream(Command.values())
+            .collect(Collectors.toMap(
+                c -> c.name.toLowerCase(),
+                Function.identity()
+            ));
+    }
 
     Command(String name) {
         this.name = name;
@@ -67,9 +80,6 @@ public enum Command {
     }
 
     public static Command parseString(String commandName) {
-        return Arrays.stream(Command.values())
-            .filter(command -> command.name.equalsIgnoreCase(commandName))
-            .findFirst()
-            .orElse(UNKNOWN);
+        return LOOKUP.getOrDefault(commandName.toLowerCase(), UNKNOWN);
     }
 }
