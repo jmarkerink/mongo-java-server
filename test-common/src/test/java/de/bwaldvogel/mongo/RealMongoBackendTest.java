@@ -152,6 +152,6 @@ public class RealMongoBackendTest extends AbstractBackendTest {
     public void testCommandThatTriggersAnInternalException() {
         assertThatExceptionOfType(MongoCommandException.class)
             .isThrownBy(() -> db.runCommand(json("triggerInternalException: 1")))
-            .withMessageStartingWith("Command failed with error 59 (CommandNotFound): 'no such command: 'triggerInternalException'");
+            .withMessageStartingWith("Command execution failed on MongoDB server with error 59 (CommandNotFound): 'no such command: 'triggerInternalException'");
     }
 }
