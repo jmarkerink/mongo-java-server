@@ -1,5 +1,7 @@
 package de.bwaldvogel.mongo.backend;
 
+import java.util.Objects;
+
 public class DatabaseCommand {
     private final Command command;
     private final String queryValue;
@@ -28,5 +30,21 @@ public class DatabaseCommand {
 
     public String getQueryValue() {
         return queryValue;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof DatabaseCommand other)){
+            return false;
+        }
+        return command == other.command;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(command);
     }
 }
