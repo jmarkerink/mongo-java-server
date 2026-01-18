@@ -2468,7 +2468,7 @@ public abstract class AbstractBackendTest extends AbstractTest {
 
     @Test
     public void testServerStatus() {
-        verifyServerStatus(runCommand("serverStatus"));
+        verifyServerStatus(runCommand(Command.SERVER_STATUS));
         verifyServerStatus(getDatabase().runCommand(json("serverStatus:1")));
     }
 
@@ -3795,7 +3795,7 @@ public abstract class AbstractBackendTest extends AbstractTest {
 
     @Test
     void testIsMaster() {
-        Document isMaster = runCommand("isMaster");
+        Document isMaster = runCommand(Command.IS_MASTER);
         assertThat(isMaster.getBoolean("ismaster")).isTrue();
         assertThat(isMaster.getDate("localTime")).isInstanceOf(Date.class);
         Integer maxBsonObjectSize = isMaster.getInteger("maxBsonObjectSize");
@@ -6638,27 +6638,27 @@ public abstract class AbstractBackendTest extends AbstractTest {
 
     @Test
     void testConnectionStatus() {
-        Document result = runCommand("connectionStatus");
+        Document result = runCommand(Command.CONNECTION_STATUS);
         assertThat(result).isEqualTo(json("ok: 1.0, authInfo: {authenticatedUsers: [], authenticatedUserRoles: []}"));
     }
 
     @Test
     void testHostInfo() {
-        Document result = runCommand("hostInfo");
+        Document result = runCommand(Command.HOST_INFO);
         assertThat(result.get("ok")).isEqualTo(1.0);
         assertThat(result).containsKeys("os", "system", "extra");
     }
 
     @Test
     void testGetCmdLineOpts() {
-        Document result = runCommand("getCmdLineOpts");
+        Document result = runCommand(Command.GET_CMD_LINE_OPTS);
         assertThat(result.get("ok")).isEqualTo(1.0);
         assertThat(result).containsOnlyKeys("ok", "argv", "parsed");
     }
 
     @Test
     void testGetFreeMonitoringStatus() {
-        Document result = runCommand("getFreeMonitoringStatus");
+        Document result = runCommand(Command.GET_FREE_MONITORING_STATUS);
         assertThat(result).isEqualTo(json("ok: 1.0, state: 'disabled', debug: {state: 'undecided'}," +
             " message: 'Free monitoring is deprecated, refer to \\'debug\\' field for actual status'"));
     }
