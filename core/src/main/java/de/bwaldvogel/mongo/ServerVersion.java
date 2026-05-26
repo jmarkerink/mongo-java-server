@@ -6,7 +6,12 @@ import java.util.List;
 public enum ServerVersion implements MongoVersion {
     MONGO_3_6(List.of(3, 6, 0), 6),
     MONGO_4_0(List.of(4, 0, 0), 7),
-    MONGO_5_0(List.of(5, 0, 0), 8);
+    MONGO_4_2(List.of(4, 2, 0), 8),
+    MONGO_4_4(List.of(4, 4, 0), 9),
+    MONGO_5_0(List.of(5, 0, 0), 13),
+    MONGO_5_1(List.of(5, 1, 0), 14),
+    MONGO_5_2(List.of(5, 2, 0), 15),
+    MONGO_5_3(List.of(5, 3, 0), 16);
 
     private final List<Integer> versionArray;
     private final int wireVersion;
